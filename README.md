@@ -12,6 +12,8 @@ $ npm install stream-switch -g
 
 ## Usage
 
+![](https://raw.githubusercontent.com/popomore/stream-switch/master/img/switch.png)
+
 ```
 var switchStream = require('stream-switch');
 
