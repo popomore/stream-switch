@@ -1,6 +1,6 @@
 {
   "name": "stream-switch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Stream condition for switch/case",
   "main": "index",
   "dependencies": {
