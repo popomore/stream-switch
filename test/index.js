@@ -8,11 +8,17 @@ describe('switchStream', function() {
 
   var plusStream = function() {
     return through.obj(function(buf, enc, cb) {
-      this.push(buf + 1);
-      cb();
+      cb(null, buf + 1);
     });
   };
 
+  var lazyStream = function() {
+    return through.obj(function(buf, enc, cb) {
+      setTimeout(function() {
+        cb(null, buf + 1);
+      }, 100);
+    });
+  };
 
   var doubleStream = function() {
     return through.obj(function(buf, enc, cb) {
@@ -50,6 +56,29 @@ describe('switchStream', function() {
     });
 
     for(var i = 0; i < 10; i++) {
+      stream.write(i);
+    }
+    stream.end();
+  });
+
+  it('should pass through when no matched', function(done) {
+    var stream = switchStream(function(buf) {
+      if (buf > 3) return 'lazy';
+    }, {
+      'lazy': lazyStream()
+    });
+
+    var ret = [];
+    stream
+    .on('data', function(data) {
+      ret.push(data);
+    })
+    .on('end', function() {
+      ret.should.eql([0, 1, 2, 3, 5, 6]);
+      done();
+    });
+
+    for(var i = 0; i < 6; i++) {
       stream.write(i);
     }
     stream.end();
